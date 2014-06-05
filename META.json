@@ -1,0 +1,44 @@
+{
+   "abstract" : "A Perl wrapper for the CLI Samtools suite of tools",
+   "author" : [
+      "Richard de Borja <richard.deborja@sickkids.ca>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4205",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "NGS-Tools-Samtools",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::More" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "NGS::Tools::Samtools" : {
+         "file" : "lib/NGS/Tools/Samtools.pm",
+         "version" : "0.02"
+      },
+      "NGS::Tools::Samtools::Role::Pileup" : {
+         "file" : "lib/NGS/Tools/Samtools/Role/Pileup.pm"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://www.perlfoundation.org/artistic_license_2_0"
+      ]
+   },
+   "version" : "0.02"
+}
