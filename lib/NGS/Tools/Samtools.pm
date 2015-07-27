@@ -2,9 +2,8 @@ package NGS::Tools::Samtools;
 use Moose;
 use MooseX::Params::Validate;
 
+with 'NGS::Tools::Samtools::Role::IndexStats';
 with 'NGS::Tools::Samtools::Role::Pileup';
-with 'NGS::Tools::Samtools::Role::PileupParser';
-with 'HPF::SGE::Role';
 
 use strict;
 use warnings FATAL => 'all';
