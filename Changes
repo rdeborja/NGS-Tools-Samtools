@@ -3,3 +3,6 @@ Revision history for NGS-Tools-Samtools
 0.01    2014-05-08
         Initial release of the package.
 
+
+0.02    2015-07-27
+        Added samtools idxstats through method generate_idxstats().

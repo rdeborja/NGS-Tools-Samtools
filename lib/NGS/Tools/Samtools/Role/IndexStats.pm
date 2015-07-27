@@ -1,78 +1,91 @@
-package NGS::Tools::Samtools::Role::PileupParser;
+package NGS::Tools::Samtools::Role::IndexStats;
 use Moose::Role;
 use MooseX::Params::Validate;
+
+with 'NGS::Tools::Samtools::Role::Core';
 
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
+use File::Basename;
 
 =head1 NAME
 
-NGS::Tools::Samtools::Role::PileupParser
+NGS::Tools::Samtools::Role::IndexStats
 
 =head1 SYNOPSIS
 
-A Perl Moose role for handling pileup parsing.
+A Perl Moose role for Samtools idxstats program that provides an alignment summary
+based on the BAM index file.
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->import_pileup()
+=head2 $obj->generate_idxstats()
 
-Read a pileup file into a data structure for further processing.
+Generate a index stats file using samtools idxstats
 
 =head3 Arguments:
 
 =over 2
 
-=item * pileup: Name of pileup file to import.
+=item * bam: BAM file to be processed
 
 =back
 
 =cut
 
-sub import_pileup {
-	my $self = shift;
-	my %args = validated_hash(
-		\@_,
-		pileup => {
-			isa         => 'Str',
-			required    => 1
-			}
-		);
+sub generate_idxstats {
+    my $self = shift;
+    my %args = validated_hash(
+        \@_,
+        bam => {
+            isa         => 'Str',
+            required    => 1
+            },
+        output => {
+            isa         => 'Str',
+            required    => 0,
+            default     => ''
+            },
+        samtools => {
+            isa         => 'Str',
+            required    => 0,
+            default     => $self->get_samtools()
+            }
+        );
 
-	open(my $pileup_fh, '<', $args{'pileup'});
-	while(my $line = <$pileup_fh>) {
-		$line =~ s/^\s+//;
-		$line =~ s/\s+$//;	
+    my $output;
+    if ($args{'output'} eq '') {
+        $output = join('.',
+            File::Basename::basename($args{'bam'}, qw( .bam )),
+            'idxstats'
+            );
+    } else {
+        $output = $args{'output'};
+        }
 
-		next if $line =~ m/REDUCE/;
+    my $program = join(' ',
+        'samtools',
+        'idxstats'
+        );
 
-#		my ($chr, $pos, $ref, $depth, $base, $quality, $position) = split(/\t/, $line);
-		my ($chr, $pos, $ref, $base, $quality) = split(' ', $line);
-		my @bases = split('', $base);
-		@bases = grep{!/[\^\$]/} @bases;
-		my @qualities = split('', $quality);
-#		my @positions = split(',', $position);
+    my $cmd = join(' ',
+        $program,
+        $args{'bam'},
+        '>',
+        $output
+        );
 
+    my %return_values = (
+        cmd => $cmd,
+        output => $output
+        );
 
-		print join("\n",
-#			"depth:\t" . $depth,
-			"bases:\t" . scalar(@bases),
-			"quality:\t" . scalar(@qualities),
-# #			"position:\t" . scalar(@positions)
-			), "\n";
-#		print splice(@positions, 1000, 2500), "\n";
-		}
-
-	my %return_values = (
-
-		);
-
-	return(\%return_values);
-	}
+    return(\%return_values);
+    }
 
 =head1 AUTHOR
 
@@ -81,8 +94,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 =head1 ACKNOWLEDGEMENT
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
-
-Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 
@@ -94,7 +105,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::Samtools::Role::PileupParser
+    perldoc NGS::Tools::Samtools::Role::IndexStats
 
 You can also look for information at:
 
@@ -164,4 +175,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::Samtools::Role::PileupParser
+1; # End of NGS::Tools::Samtools::Role::IndexStats
