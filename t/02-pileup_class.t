@@ -11,5 +11,5 @@ BEGIN: {
 
 my $samtools = NGS::Tools::Samtools->new();
 isa_ok($samtools, NGS::Tools::Samtools);
-can_ok($samtools, qw(create_pileup import_pileup));
+can_ok($samtools, qw(create_pileup generate_idxstats));
 
